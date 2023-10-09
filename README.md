@@ -71,7 +71,7 @@ $TTL    604800
 ;
 @       IN      NS      arjuna.a09.com.
 @       IN      A       192.173.1.2     ; IP Yudhistira
-www     IN      CNAME   arjuna.a09.com' > /etc/bind/jarkom/arjuna.a09.com
+www     IN      CNAME   arjuna.a09.com.' > /etc/bind/jarkom/arjuna.a09.com
 
 service bind9 restart
 ```
@@ -124,7 +124,7 @@ $TTL    604800
 ;
 @       IN      NS      abimanyu.a09.com.
 @       IN      A       192.173.1.2     ; IP Yudhistira
-www     IN      CNAME   abimanyu.a09.com' > /etc/bind/jarkom/abimanyu.a09.com
+www     IN      CNAME   abimanyu.a09.com.' > /etc/bind/jarkom/abimanyu.a09.com
 
 service bind9 restart
 ```
@@ -142,6 +142,40 @@ ping abimanyu.a09.com -c 5
 
 ### Soal 4
 > Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain parikesit.abimanyu.yyy.com yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
+
+**Yudhistira**
+```
+echo 'parikesit IN    A       192.173.3.3     ; IP Abimanyu' > /etc/bind/jarkom/abimanyu.a09.com
+
+service bind9 restart
+
+nano /etc/bind/jarkom/abimanyu.a09.com
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     abimanyu.a09.com. root.abimanyu.a09.com. (
+                        2023101001      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      abimanyu.a09.com.
+@       IN      A       192.173.1.2     ; IP Yudhistira
+www     IN      CNAME   abimanyu.a09.com.
+parikesit IN    A       192.173.3.3     ; IP Abimanyu
+```
+
+**Abimanyu**
+```
+ping parikesit.abimanyu.a09.com -c 3
+```
+
+**Result**
+
+![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/3aea4e68-6e53-4aff-ad27-d7d4dbcebc77)
+
 
 ### Soal 5
 > Buat juga reverse domain untuk domain utama.
