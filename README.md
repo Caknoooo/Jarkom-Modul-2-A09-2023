@@ -83,6 +83,7 @@ ping arjuna.a09.com -c 5
 ```
 
 **Result**
+
 ![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/da1a8f5f-6c35-45a7-b10d-b084d5fb23b8)
 
 ### Soal 3
