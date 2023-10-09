@@ -180,6 +180,50 @@ ping parikesit.abimanyu.a09.com -c 3
 ### Soal 5
 > Buat juga reverse domain untuk domain utama.
 
+Karena IP ``Yudhistira`` adalah ``192.173.1.2`` maka akan menggunakan reverse sebagai beriku t
+```
+nano /etc/bind/named.local.conf
+
+zone "1.173.192.in-addr.arpa" {
+        type master;
+        file "/etc/bind/jarkom/1.173.192.in-addr.arpa";
+};
+
+cp /etc/bind/db.local /etc/bind/jarkom/1.173.192.in-addr.arpa
+
+nano /etc/bind/jarkom/1.173.192.in-addr.arpa
+
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     arjuna.a09.com. root.arjuna.a09.com. (
+                        2003101001      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+1.173.192.in-addr.arpa. IN      NS      arjuna.a09.com.
+2                       IN      PTR     arjuna.a09.com.
+
+service bind9 restart
+```
+
+**Arjuna**
+```
+- Ubah nameserver menuju 192.168.122.1 agar mendapatkan akses internet 
+- apt-get update
+- apt-get install dnsutils
+- ubah kembali nameserver menuju IP Yudhistira
+- host -t PTR 192.173.1.2
+```
+
+**Result**
+
+![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/8fd99b37-4f44-4a28-b830-211389ce5de7)
+
+
 ### Soal 6
 > Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
 
