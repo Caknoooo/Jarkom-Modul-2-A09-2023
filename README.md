@@ -62,7 +62,7 @@ echo '
 ; BIND data file for local loopback interface
 ;
 $TTL    604800
-@       IN      SOA     arjuna.a09.com. arjuna.a09.com. (
+@       IN      SOA     arjuna.a09.com. root.arjuna.a09.com. (
                         2023101001      ; Serial
                          604800         ; Refresh
                           86400         ; Retry
@@ -88,3 +88,53 @@ ping arjuna.a09.com -c 5
 
 ### Soal 3
 > Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
+
+**Yudhistira**
+```
+nano .bashrc (kalau belum setup)
+
+-> 
+nameserver 192.168.122.1
+apt-get update
+apt-get install bind9 -y
+```
+
+```
+echo 'zone "abimanyu.a09.com" {
+        type master;
+        file "/etc/bind/jarkom/abimanyu.a09.com";
+        allow-transfer { 192.173.3.3; }; // IP Arjuna
+};' > /etc/bind9/named.conf.local
+
+mkdir /etc/bind/jarkom
+
+cp /etc/bind/db.local /etc/bind/jarkom/abimanyu.a09.com
+
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     abimanyu.a09.com. root.abimanyu.a09.com. (
+                        2023101001      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      abimanyu.a09.com.
+@       IN      A       192.173.1.2     ; IP Yudhistira
+www     IN      CNAME   abimanyu.a09.com' > /etc/bind/jarkom/abimanyu.a09.com
+
+service bind9 restart
+```
+
+**Abimanyu**
+```
+echo 'nameserver 192.173.1.2' > /etc/resolv.conf
+ping abimanyu.a09.com -c 5
+```
+
+**Result**
+
+![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/651c1699-2cdf-490a-88ec-f483cba17d11)
