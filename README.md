@@ -1,4 +1,4 @@
-![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/30e29367-2376-4145-9ca4-9b905d08e944)# Jarkom-Modul-2-A09-2023
+# Jarkom-Modul-2-A09-2023
 **Praktikum Jaringan Komputer Modul 2 Tahun 2023**
 
 ## Author
@@ -7,7 +7,13 @@
 |Andika Laksana Putra | 5025211001 | https://github.com/DikaPutra07 |
 |M. Naufal Badruttamam | 5025211240 | https://github.com/Caknoooo |
 
-### List Soal
+# Laporan Resmi
+## Daftar Isi
+- [Laporan Resmi](#laporan-resmi)
+  - [Daftar Isi](#daftar-isi)
+  - [Topologi](#topologi)
+  - [Config](#config)
+  - [Sebelum Memulai](#sebelum-memulai)
 - [Soal 1](#Soal-1)
 - [Soal 2](#Soal-2)
 - [Soal 3](#Soal-3)
@@ -28,6 +34,135 @@
 - [Soal 18](#Soal-18)
 - [Soal 19](#Soal-19)
 - [Soal 20](#Soal-20)
+
+## Topologi
+![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/aef9ddca-6b6e-43f0-9e07-690cbe26a9c0)
+
+## Config 
+- **Pandudewanata**
+  ```
+  auto eth0
+  iface eth0 inet dhcp
+
+  auto eth1
+  iface eth1 inet static
+          address 192.173.1.1
+          netmask 255.255.255.0
+
+  auto eth2
+  iface eth2 inet static
+          address 192.173.2.1
+          netmask 255.255.255.0
+
+  auto eth3
+  iface eth3 inet static
+          address 192.173.3.1
+          netmask 255.255.255.0
+  ```
+- **Yudhistira**
+  ```
+  auto eth0
+  iface eth0 inet static
+          address 192.173.1.2
+          netmask 255.255.255.0
+          gateway 192.173.1.1
+  ```
+- **Nakula**
+  ```
+  auto eth0
+  iface eth0 inet static
+          address 192.173.1.3
+          netmask 255.255.255.0
+          gateway 192.173.1.1
+  ```
+- **Werkudara**
+  ```
+  auto eth0
+  iface eth0 inet static
+          address 192.173.2.2
+          netmask 255.255.255.0
+          gateway 192.173.2.1
+  ```
+- **Sadewa**
+  ```
+  auto eth0
+  iface eth0 inet static
+          address 192.173.2.3
+          netmask 255.255.255.0
+          gateway 192.173.2.1
+  ```
+- **Prabukusuma**
+  ```
+  auto eth0
+  iface eth0 inet static
+          address 192.173.3.2
+          netmask 255.255.255.0
+          gateway 192.173.3.1
+  ```
+- **Abimanyu**
+  ```
+  auto eth0
+  iface eth0 inet static
+          address 192.173.3.3
+          netmask 255.255.255.0
+          gateway 192.173.3.1
+  ```
+- **Wisanggeni**
+  ```
+  auto eth0
+  iface eth0 inet static
+          address 192.173.3.4
+          netmask 255.255.255.0
+          gateway 192.173.3.1
+  ```
+- **Arjuna**
+  ```
+  auto eth0
+  iface eth0 inet static
+          address 192.173.3.5
+          netmask 255.255.255.0
+          gateway 192.173.3.1
+  ```
+- **Notes of Config**
+  ```
+  Pandudewanata	: 192.173.1.1 (Switch 1)
+  Yudhistira	: 192.173.1.2
+  Nakula	        : 192.173.1.3
+  Pandudewanata	: 192.173.2.1 (Switch 2)
+  Werkudara	: 192.173.2.2
+  Sadewa	        : 192.173.2.3
+  Pandudewanata	: 192.173.3.1 (Switch 3)
+  Prabukusuma	: 192.173.3.2
+  Abimanyu	: 192.173.3.3
+  Wisanggeni	: 192.173.3.4
+  Arjuna	        : 192.173.3.5
+  ```
+
+### Sebelum memulai 
+setiap node, kita inisiasi pada `.bashrc` menggunakan `nano`
+
+- **Pandudewanata**
+  ```
+  apt-get update
+  apt-get install nano -y
+  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 192.173.0.0/16
+  ```
+- **Master & Slave**
+  ```
+  echo 'nameserver 192.168.122.1' > /etc/resolv.conf
+  apt-get update
+  apt-get install bind9 -y      
+  ```
+- **Client**
+  ```
+  echo -e '
+  nameserver 192.173.1.2 # IP Yudhistira
+  nameserver 192.168.122.1
+  ' > /etc/resolv.conf
+  apt-get update
+  apt-get install dnsutils
+  apt-get install lynx
+  ```
 
 ### Soal 1 
 > Yudhistira akan digunakan sebagai DNS Master, Werkudara sebagai DNS Slave, Arjuna merupakan Load Balancer yang terdiri dari beberapa Web Server yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Buatlah topologi dengan pembagian sebagai berikut. Folder topologi dapat diakses pada drive berikut
