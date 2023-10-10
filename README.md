@@ -180,7 +180,7 @@ ping parikesit.abimanyu.a09.com -c 3
 ### Soal 5
 > Buat juga reverse domain untuk domain utama.
 
-Karena IP ``Yudhistira`` adalah ``192.173.1.2`` maka akan menggunakan reverse sebagai beriku t
+Karena IP ``Yudhistira`` adalah ``192.173.1.2`` maka akan menggunakan reverse sebagai berikut
 ```
 nano /etc/bind/named.local.conf
 
@@ -227,8 +227,55 @@ service bind9 restart
 ### Soal 6
 > Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
 
+**Yudhistira**
+```
+nano /etc/bind/named.local.conf
+
+zone "arjuna.a09.com" {
+        type master;
+        notify yes;
+        also-notify { 192.173.2.2; }; // IP Werkudara
+        file "/etc/bind/jarkom/arjuna.a09.com";
+        allow-transfer { 192.173.2.2; }; // IP Werkudara
+};
+
+service bind9 restart
+```
+
+**Werkudara**
+```
+- Ubah nameserver menuju 192.168.122.1 agar mendapatkan akses internet 
+- apt-get update
+- apt-get install bind9 -y
+- nano /etc/bind/named.conf.local
+zone "arjuna.a09.com" {
+    type slave;
+    masters { 192.173.1.2; }; // Masukan IP Yudhistira
+    file "/var/lib/bind/arjuna.a09.com";
+};
+
+- service bind9 restart
+```
+
+**Yudhistira**
+```
+service bind9 stop
+```
+
+**Arjuna**
+```
+ping arjuna.a09.com -c 5
+```
+
+**Result**
+
+![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/1e0c0966-5d7b-4bbe-8e68-3673028de4b9)
+
+
 ### Soal 7
 > Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda
+
+
 
 ### Soal 8
 > Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
