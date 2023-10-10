@@ -182,7 +182,7 @@ ping parikesit.abimanyu.a09.com -c 3
 
 Karena IP ``Yudhistira`` adalah ``192.173.1.2`` maka akan menggunakan reverse sebagai berikut
 ```
-nano /etc/bind/named.local.conf
+nano /etc/bind/named.conf.local
 
 zone "1.173.192.in-addr.arpa" {
         type master;
@@ -229,7 +229,7 @@ service bind9 restart
 
 **Yudhistira**
 ```
-nano /etc/bind/named.local.conf
+nano /etc/bind/named.conf.local
 
 zone "arjuna.a09.com" {
         type master;
@@ -274,6 +274,81 @@ ping arjuna.a09.com -c 5
 
 ### Soal 7
 > Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda
+
+**Yudhistira**
+```
+nano /etc/bind/named.conf.local
+
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     abimanyu.a09.com. root.abimanyu.a09.com. (
+                        2023101001      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      abimanyu.a09.com.
+@       IN      A       192.173.1.2     ; IP Yudhistira
+www     IN      CNAME   abimanyu.a09.com.
+parikesit IN    A       192.173.3.3     ; IP Abimanyu
+ns1     IN      A       192.173.2.2     ; IP Werkudara
+baratayuda IN   NS      ns1
+
+nano /etc/bind/named.conf.options
+tambahkan allow-query{any;}; dan comment dnssec
+
+service bind9 restart
+```
+
+**Werkudara**
+```
+nano /etc/bind/named.conf.local
+
+zone "baratayuda.abimanyu.a09.com" {
+        type master;
+        file "/etc/bind/baratayuda/baratayuda.abimanyu.a09.com";
+};
+
+mkdir /etc/bind/baratayuda
+
+cp /etc/bind/db.local /etc/bind/baratayuda.abimanyu.a09.com
+
+nano baratayuda.abimanyu.a09.com
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     baratayuda.abimanyu.a09.com. root.baratayuda.abimanyu.a09.com. (
+                        2023101001      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      baratayuda.abimanyu.a09.com.
+@       IN      A       192.173.3.3     ; IP Abimanyu
+www     IN      CNAME   baratayuda.abimanyu.a09.com.
+
+nano /etc/bind/named.conf.options
+tambahkan allow-query{any;}; dan comment dnssec
+
+service bind9 restart
+```
+
+**Abimanyu**
+```
+ping baratayuda.abimanyu.a09.com -c 5
+ping www.baratayuda.abimanyu.a09.com -c 5
+```
+
+**Result**
+
+![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/72a39d43-aeda-4bf2-9585-6bb72bb5450a)
+
+![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/476c6b98-fd90-4f4f-af0f-d8aa682be401)
 
 
 
