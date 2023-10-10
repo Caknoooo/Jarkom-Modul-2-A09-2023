@@ -1,4 +1,4 @@
-# Jarkom-Modul-2-A09-2023
+![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/30e29367-2376-4145-9ca4-9b905d08e944)# Jarkom-Modul-2-A09-2023
 **Praktikum Jaringan Komputer Modul 2 Tahun 2023**
 
 ## Author
@@ -350,10 +350,43 @@ ping www.baratayuda.abimanyu.a09.com -c 5
 
 ![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/476c6b98-fd90-4f4f-af0f-d8aa682be401)
 
-
-
 ### Soal 8
 > Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
+
+**Werkudara** 
+```
+nano /etc/bind/baratayuda/baratayuda.abimanyu.a09.com
+
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     baratayuda.abimanyu.a09.com. root.baratayuda.abimanyu.a09.com. (
+                        2023101001      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@               IN      NS      baratayuda.abimanyu.a09.com.
+@               IN      A       192.173.3.3     ; IP Abimanyu
+www             IN      CNAME   baratayuda.abimanyu.a09.com.
+rjp             IN      A       192.173.3.3     ; IP Abimanyu
+www.rjp         IN      CNAME   rjp.baratayuda.abimanyu.a09.com.
+
+service bind9 restart
+```
+
+**Abimanyu**
+```
+ping www.rjp.baratayuda.abimanyu.a09.com -c 5
+ping rjp.baratayuda.abimanyu.a09.com -c 5
+```
+
+**Result**
+
+![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/e46fc859-83a9-40a8-a72c-4e3857be5bfd)
+
 
 ### Soal 9
 > Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker
