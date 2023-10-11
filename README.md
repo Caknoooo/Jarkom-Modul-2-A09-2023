@@ -15,25 +15,65 @@
   - [Config](#config)
   - [Sebelum Memulai](#sebelum-memulai)
 - [Soal 1](#Soal-1)
+  - [Script](#script)
+  - [Result](#result)
 - [Soal 2](#Soal-2)
+  - [Script](#script-1)
+  - [Result](#result-1)
 - [Soal 3](#Soal-3)
+  - [Script](#script-2)
+  - [Result](#result-2)
 - [Soal 4](#Soal-4)
+  - [Script](#script-3)
+  - [Result](#result-3)
 - [Soal 5](#Soal-5)
+  - [Script](#script-4)
+  - [Result](#result-4)
 - [Soal 6](#Soal-6)
+  - [Script](#script-5)
+  - [Result](#result-5)
 - [Soal 7](#Soal-7)
+  - [Script](#script-6)
+  - [Result](#result-6)
 - [Soal 8](#Soal-8)
+  - [Script](#script-7)
+  - [Result](#result-7)
 - [Soal 9](#Soal-9)
+  - [Script](#script-8)
+  - [Result](#result-8)
 - [Soal 10](#Soal-10)
+  - [Script](#script-9)
+  - [Result](#result-9)
 - [Soal 11](#Soal-11)
+  - [Script](#script-10)
+  - [Result](#result-10)
 - [Soal 12](#Soal-12)
+  - [Script](#script-11)
+  - [Result](#result-11)
 - [Soal 13](#Soal-13)
+  - [Script](#script-12)
+  - [Result](#result-12)
 - [Soal 14](#Soal-14)
+  - [Script](#script-13)
+  - [Result](#result-13)
 - [Soal 15](#Soal-15)
+  - [Script](#script-14)
+  - [Result](#result-14)
 - [Soal 16](#Soal-16)
+  - [Script](#script-15)
+  - [Result](#result-15)
 - [Soal 17](#Soal-17)
+  - [Script](#script-16)
+  - [Result](#result-16)
 - [Soal 18](#Soal-18)
+  - [Script](#script-17)
+  - [Result](#result-17)
 - [Soal 19](#Soal-19)
+  - [Script](#script-18)
+  - [Result](#result-18)
 - [Soal 20](#Soal-20)
+  - [Script](#script-19)
+  - [Result](#result-19)
 
 ## Topologi
 ![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/aef9ddca-6b6e-43f0-9e07-690cbe26a9c0)
@@ -144,8 +184,8 @@ setiap node, kita inisiasi pada `.bashrc` menggunakan `nano`
 - **Pandudewanata**
   ```
   apt-get update
-  apt-get install nano -y
   iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 192.173.0.0/16
+  echo 'nameserver 192.168.122.1' > /etc/resolv.conf
   ```
 - **Master & Slave**
   ```
@@ -157,11 +197,53 @@ setiap node, kita inisiasi pada `.bashrc` menggunakan `nano`
   ```
   echo -e '
   nameserver 192.173.1.2 # IP Yudhistira
+  nameserver 192.173.2.2 # IP Werkudara
   nameserver 192.168.122.1
   ' > /etc/resolv.conf
   apt-get update
-  apt-get install dnsutils
-  apt-get install lynx
+  apt-get install dnsutils -y
+  apt-get install lynx -y
+  ```
+- **Nginx Config**
+  ```
+  apt install nginx php php-fpm -y
+  ```
+- **Apache2 Config**
+  ```
+  apt-get update
+  apt-get install dnsutils -y
+  apt-get install lynx -y
+  apt-get install nginx -y
+  service nginx start
+  apt-get install apache2 -y
+  apt-get install libapache2-mod-php7.0 -y
+  service apache2 start
+  apt-get install wget -y
+  apt-get install unzip -y
+  apt-get install php -y
+  echo -e "\n\nPHP Version:"
+  php -v
+  ```
+- **Zip Download and Unzip**
+  ```
+  wget -O '/var/www/abimanyu.a09.com' 'https://     drive.usercontent.google.com/download?id=1a4V23hwK9S7hQEDEcv9FL14UkkrHc-Zc'
+  unzip -o /var/www/abimanyu.a09.com -d /var/www/
+  mv /var/www/abimanyu.yyy.com /var/www/abimanyu.a09
+  rm /var/www/abimanyu.a09.com
+  rm -rf /var/www/abimanyu.yyy.com
+
+  wget -O '/var/www/parikesit.abimanyu.a09.com' 'https://drive.usercontent.google.com/download?id=1LdbYntiYVF_NVNgJis1GLCLPEGyIOreS'
+  unzip -o /var/www/parikesit.abimanyu.a09.com -d /var/www/
+  mv /var/www/parikesit.abimanyu.yyy.com /var/www/parikesit.abimanyu.a09
+  rm /var/www/parikesit.abimanyu.a09.com
+  rm -rf /var/www/parikesit.abimanyu.yyy.com
+  mkdir /var/www/parikesit.abimanyu.a09/secret
+
+  wget -O '/var/www/rjp.baratayuda.abimanyu.a09.com' 'https://drive.usercontent.google.com/download?id=1pPSP7yIR05JhSFG67RVzgkb-VcW9vQO6'
+  unzip -o /var/www/rjp.baratayuda.abimanyu.a09.com -d /var/www/
+  mv /var/www/rjp.baratayuda.abimanyu.yyy.com /var/www/rjp.baratayuda.abimanyu.a09
+  rm /var/www/rjp.baratayuda.abimanyu.a09.com
+  rm -rf /var/www/rjp.baratayuda.abimanyu.yyy.com
   ```
 
 ### Soal 1 
