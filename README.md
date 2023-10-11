@@ -251,7 +251,7 @@ setiap node, kita inisiasi pada `.bashrc` menggunakan `nano`
 
 ### Script
 
-### Test
+### Result
 
 ## Soal 2 
 > Buatlah website utama dengan akses ke arjuna.yyy.com dengan alias www.arjuna.yyy.com dengan yyy merupakan kode kelompok.
@@ -259,7 +259,7 @@ Config
 
 ### Script
 
-### Test
+### Result
 
 **Yudhistira**
 ```
@@ -316,7 +316,7 @@ ping arjuna.a09.com -c 5
 
 ### Script
 
-### Test
+### Result
 
 **Yudhistira**
 ```
@@ -374,7 +374,7 @@ ping abimanyu.a09.com -c 5
 
 ### Script
 
-### Test
+### Result
 
 **Yudhistira**
 ```
