@@ -257,20 +257,13 @@ setiap node, kita inisiasi pada `.bashrc` menggunakan `nano`
 > Buatlah website utama dengan akses ke arjuna.yyy.com dengan alias www.arjuna.yyy.com dengan yyy merupakan kode kelompok.
 Config
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu
+
 ### Script
 
-### Result
+Pada node DNS Master, kita perlu melakukan setup terlebih dahulu sebagai berikut 
 
 **Yudhistira**
-```
-nano .bashrc
-
--> 
-nameserver 192.168.122.1
-apt-get update
-apt-get install bind9 -y
-```
-
 ```
 echo 'zone "arjuna.a09.com" {
         type master;
@@ -302,42 +295,36 @@ service bind9 restart
 ```
 
 **Arjuna**
+
+Jangan lupa untuk setup nameserver terlebih dahulu yang diarahkan ke `IP Node yudhistira`
 ```
-echo 'nameserver 192.173.1.2' > /etc/resolv.conf
 ping arjuna.a09.com -c 5
+ping www.arjuna.a09.com -c 5
 ```
 
-**Result**
+### Result
 
-![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/da1a8f5f-6c35-45a7-b10d-b084d5fb23b8)
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/cd309f92-2a32-4620-a06f-dbd5ac692d26)
+
 
 ## Soal 3
 > Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu
+
 ### Script
 
-### Result
+Pada node DNS Master, kita perlu melakukan setup terlebih dahulu sebagai berikut 
 
 **Yudhistira**
-```
-nano .bashrc (kalau belum setup)
-
--> 
-nameserver 192.168.122.1
-apt-get update
-apt-get install bind9 -y
-```
-
 ```
 echo 'zone "abimanyu.a09.com" {
         type master;
         file "/etc/bind/jarkom/abimanyu.a09.com";
         allow-transfer { 192.173.3.3; }; // IP Arjuna
-};' > /etc/bind9/named.conf.local
+};' > /etc/bind/named.conf.local
 
-mkdir /etc/bind/jarkom
-
-cp /etc/bind/db.local /etc/bind/jarkom/abimanyu.a09.com
+cp /etc/bind/db.local /etc/bind/jarkom/arjuna.a09.com
 
 echo '
 ;
@@ -359,30 +346,30 @@ service bind9 restart
 ```
 
 **Abimanyu**
+
+Jangan lupa untuk setup nameserver terlebih dahulu yang diarahkan ke `IP Node yudhistira`
 ```
-echo 'nameserver 192.173.1.2' > /etc/resolv.conf
 ping abimanyu.a09.com -c 5
+ping www.abimanyu.a09.com -c 5
 ```
 
-**Result**
+### Result
 
-![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/651c1699-2cdf-490a-88ec-f483cba17d11)
-
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/023acddc-7aef-4f60-9f92-e8a56ba047df)
 
 ## Soal 4
 > Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain parikesit.abimanyu.yyy.com yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk subdomain, kita perlu menambahkan `parikesit` dengan type `A` yang mengarah langsung ke IP Abimanyu.
+
 ### Script
 
-### Result
-
 **Yudhistira**
+
+Cukup menambahkan ``parikesit IN    A       192.173.3.3     ; IP Abimanyu' > /etc/bind/jarkom/abimanyu.a09.com`` saja pada DNS Master.
+
 ```
-echo 'parikesit IN    A       192.173.3.3     ; IP Abimanyu' > /etc/bind/jarkom/abimanyu.a09.com
-
-service bind9 restart
-
-nano /etc/bind/jarkom/abimanyu.a09.com
+echo '
 ;
 ; BIND data file for local loopback interface
 ;
@@ -397,116 +384,132 @@ $TTL    604800
 @       IN      NS      abimanyu.a09.com.
 @       IN      A       192.173.1.2     ; IP Yudhistira
 www     IN      CNAME   abimanyu.a09.com.
-parikesit IN    A       192.173.3.3     ; IP Abimanyu
+parikesit IN    A       192.173.3.3     ; IP Abimanyu' > /etc/bind/jarkom/abimanyu.a09.com
+
+service bind9 restart
 ```
 
 **Abimanyu**
 ```
-ping parikesit.abimanyu.a09.com -c 3
+ping parikesit.abimanyu.a09.com -c 5
 ```
 
-**Result**
+### Result
 
-![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/3aea4e68-6e53-4aff-ad27-d7d4dbcebc77)
-
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/2bd9c244-2a14-4213-88b5-243228b02b94)
 
 ### Soal 5
 > Buat juga reverse domain untuk domain utama.
 
-Karena IP ``Yudhistira`` adalah ``192.173.1.2`` maka akan menggunakan reverse sebagai berikut
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Yang akan kita reverse domainnya adalah Abimanyu. 
+
+### Script
+Untuk melakukan reverse domain. Kita perlu untuk mengetahui `IP` dari `Abimanyu`. Karena `IP Abimanyu` kelompok kami adalah `192.173.3.3`, maka kita perlu mengubahnya menjadi `3.3.173.192`
+
+**Yudhistira**
 ```
-nano /etc/bind/named.conf.local
-
-zone "1.173.192.in-addr.arpa" {
+echo 'zone "3.173.192.in-addr.arpa" {
         type master;
-        file "/etc/bind/jarkom/1.173.192.in-addr.arpa";
-};
+        file "/etc/bind/jarkom/3.173.192.in-addr.arpa";
+};' > /etc/bind/named.conf.local
 
-cp /etc/bind/db.local /etc/bind/jarkom/1.173.192.in-addr.arpa
+cp /etc/bind/db.local /etc/bind/jarkom/3.173.192.in-addr.arpa
 
-nano /etc/bind/jarkom/1.173.192.in-addr.arpa
-
+echo '
 ;
 ; BIND data file for local loopback interface
 ;
 $TTL    604800
-@       IN      SOA     arjuna.a09.com. root.arjuna.a09.com. (
+@       IN      SOA     abimanyu.a09.com. root.abimanyu.a09.com. (
                         2003101001      ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
                          604800 )       ; Negative Cache TTL
 ;
-1.173.192.in-addr.arpa. IN      NS      arjuna.a09.com.
-2                       IN      PTR     arjuna.a09.com.
+3.173.192.in-addr.arpa. IN      NS      abimanyu.a09.com.
+3                       IN      PTR     abimanyu.a09.com.' > /etc/bind/jarkom/3.173.192.in-addr.arpa
 
 service bind9 restart
 ```
 
-**Arjuna**
+**Abimanyu / Client yang lain**
+
+Sebelum mengakses, jangan lupa untuk mengembalikan `nameserver` ke DNS Master
 ```
-- Ubah nameserver menuju 192.168.122.1 agar mendapatkan akses internet 
-- apt-get update
-- apt-get install dnsutils
-- ubah kembali nameserver menuju IP Yudhistira
-- host -t PTR 192.173.1.2
+host -t PTR 192.173.3.3
 ```
 
-**Result**
+### Result
 
-![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/8fd99b37-4f44-4a28-b830-211389ce5de7)
-
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/67c26265-8561-461f-80d3-8c2b9d2f5ac0)
 
 ### Soal 6
 > Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
 
-**Yudhistira**
-```
-nano /etc/bind/named.conf.local
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk mengerjakan DNS Slave, kita memerlukan beberapa konfigurasi pada `DNS Master` dan `DNS Slave (Werkudara)`
 
-zone "arjuna.a09.com" {
+### Script
+**Yudhistira**
+
+Pada `DNS Master` diperlukan setup `also-notify` dan `allow-transfer` agar memberikan izin kepada `IP` yang dituju. 
+```
+echo 'zone "arjuna.a09.com" {
         type master;
-        notify yes;
-        also-notify { 192.173.2.2; }; // IP Werkudara
         file "/etc/bind/jarkom/arjuna.a09.com";
         allow-transfer { 192.173.2.2; }; // IP Werkudara
 };
 
-service bind9 restart
-```
-
-**Werkudara**
-```
-- Ubah nameserver menuju 192.168.122.1 agar mendapatkan akses internet 
-- apt-get update
-- apt-get install bind9 -y
-- nano /etc/bind/named.conf.local
-zone "arjuna.a09.com" {
-    type slave;
-    masters { 192.173.1.2; }; // Masukan IP Yudhistira
-    file "/var/lib/bind/arjuna.a09.com";
+zone "abimanyu.a09.com" {
+        type master;
+        notify yes;
+        also-notify { 192.173.2.2; }; // IP Werkudara
+        allow-transfer { 192.173.2.2; }; // IP Werkudara
+        file "/etc/bind/jarkom/abimanyu.a09.com";
 };
 
-- service bind9 restart
-```
+zone "3.173.192.in-addr.arpa" {
+        type master;
+        file "/etc/bind/jarkom/3.173.192.in-addr.arpa";
+};' > /etc/bind/named.conf.local
 
-**Yudhistira**
-```
+// Jangan lupa restart lalu stop bind9, untuk melakukan testing slave
+
+service bind9 restart
 service bind9 stop
 ```
 
-**Arjuna**
+**Werkudara (DNS Slave)**
 ```
-ping arjuna.a09.com -c 5
+echo 'zone "abimanyu.a09.com" {
+    type slave;
+    masters { 192.173.1.2; }; // Masukan IP Yudhistira
+    file "/var/lib/bind/abimanyu.a09.com";
+};' >> /etc/bind/named.conf.local
+
+service bind9 restart
 ```
 
-**Result**
+**Abimanyu**
+```
+ping abimanyu.a09.com -c 5
+ping www.abimanyu.a09.com -c 5
+```
 
-![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/1e0c0966-5d7b-4bbe-8e68-3673028de4b9)
+### Result
 
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/56a1f36f-b908-422c-a58e-bda10e3bb592)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/84bd0be0-284b-4692-b767-cc8af6f99672)
 
 ### Soal 7
 > Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda
+
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
+### Script
+
+### Result
 
 **Yudhistira**
 ```
@@ -586,6 +589,10 @@ ping www.baratayuda.abimanyu.a09.com -c 5
 ### Soal 8
 > Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
 
+### Script
+
+### Result
+
 **Werkudara** 
 ```
 nano /etc/bind/baratayuda/baratayuda.abimanyu.a09.com
@@ -624,35 +631,83 @@ ping rjp.baratayuda.abimanyu.a09.com -c 5
 ### Soal 9
 > Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker
 
+### Script
+
+### Result
+
 ### Soal 10
 > Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh (Prabakusuma:8001, Abimanyu:8002, Wisanggeni:8003)
+
+### Script
+
+### Result
 
 ### Soal 11
 > Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server www.abimanyu.yyy.com. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy
 
+### Script
+
+### Result
+
 ### Soal 12
 > Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abimanyu.yyy.com/home.
+
+### Script
+
+### Result
 
 ### Soal 13
 > Selain itu, pada subdomain www.parikesit.abimanyu.yyy.com, DocumentRoot disimpan pada /var/www/parikesit.abimanyu.yyy
 
+### Script
+
+### Result
+
 ### Soal 14
 > Pada subdomain tersebut folder /public hanya dapat melakukan directory listing sedangkan pada folder /secret tidak dapat diakses (403 Forbidden)
+
+### Script
+
+### Result
 
 ### Soal 15
 > Buatlah kustomisasi halaman error pada folder /error untuk mengganti error kode pada Apache. Error kode yang perlu diganti adalah 404 Not Found dan 403 Forbidden.
 
+### Script
+
+### Result
+
 ### Soal 16
 > Buatlah suatu konfigurasi virtual host agar file asset www.parikesit.abimanyu.yyy.com/public/js menjadi www.parikesit.abimanyu.yyy.com/js 
+
+### Script
+
+### Result
 
 ### Soal 17
 > Agar aman, buatlah konfigurasi agar www.rjp.baratayuda.abimanyu.yyy.com hanya dapat diakses melalui port 14000 dan 14400.
 
+### Script
+
+### Result
+
 ### Soal 18
 > Untuk mengaksesnya buatlah autentikasi username berupa “Wayang” dan password “baratayudayyy” dengan yyy merupakan kode kelompok. Letakkan DocumentRoot pada /var/www/rjp.baratayuda.abimanyu.yyy.
+
+### Script
+
+### Result
 
 ### Soal 19
 > Buatlah agar setiap kali mengakses IP dari Abimanyu akan secara otomatis dialihkan ke www.abimanyu.yyy.com (alias)
 
+### Script
+
+### Result
+
 ### Soal 20
 > Karena website www.parikesit.abimanyu.yyy.com semakin banyak pengunjung dan banyak gambar gambar random, maka ubahlah request gambar yang memiliki substring “abimanyu” akan diarahkan menuju abimanyu.png.
+
+### Script
+
+### Result
