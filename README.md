@@ -505,17 +505,15 @@ ping www.abimanyu.a09.com -c 5
 ### Soal 7
 > Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk melakukan Delegasi subdomain. Kita memerlukan beberapa configurasi pada `DNS Master` dan `DNS Slave`. Kita juga memerlukan bantuan ``allow-query { any; };`` pada `DNS Master dan Slave. Serta kita memerlukan ``NS`` karena NS digunakan untuk delegasi zona DNS untuk menggunakan authoritative name server yang diberikan
 
 ### Script
-
-### Result
-
 **Yudhistira**
-```
-nano /etc/bind/named.conf.local
 
-;
+Pada `DNS Master` kita perlu menambahkan ``ns1     IN      A       192.173.2.2     ; IP Werkudara`` agar mendapatkan authoritative terhadap Werkudara. Kita juga perlu mengaktifkan ``allow-query { any; };`` pada `DNS Master`
+
+```
+echo ';
 ; BIND data file for local loopback interface
 ;
 $TTL    604800
@@ -531,28 +529,53 @@ $TTL    604800
 www     IN      CNAME   abimanyu.a09.com.
 parikesit IN    A       192.173.3.3     ; IP Abimanyu
 ns1     IN      A       192.173.2.2     ; IP Werkudara
-baratayuda IN   NS      ns1
+baratayuda IN   NS      ns1' > /etc/bind/jarkom/abimanyu.a09.com
 
-nano /etc/bind/named.conf.options
-tambahkan allow-query{any;}; dan comment dnssec
+echo "options {
+    directory \"/var/cache/bind\";
+
+    // If there is a firewall between you and nameservers you want
+    // to talk to, you may need to fix the firewall to allow multiple
+    // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+    // If your ISP provided one or more IP addresses for stable
+    // nameservers, you probably want to use them as forwarders.
+    // Uncomment the following block, and insert the addresses replacing
+    // the all-0's placeholder.
+
+    // forwarders {
+    //      0.0.0.0;
+    // };
+
+    //========================================================================
+    // If BIND logs error messages about the root key being expired,
+    // you will need to update your keys.  See https://www.isc.org/bind-keys
+    //========================================================================
+    //dnssec-validation auto;
+
+    allow-query { any; };
+    auth-nxdomain no;
+    listen-on-v6 { any; };
+};" > /etc/bind/named.conf.options
 
 service bind9 restart
 ```
 
 **Werkudara**
-```
-nano /etc/bind/named.conf.local
 
-zone "baratayuda.abimanyu.a09.com" {
+Pada `DNS Slave` Kita perlu untuk mengarahkan `zone` ke `DNS Master` agar authoritative tadi dapat jalan. Kita juga perlu mengaktifkan ``allow-query { any; };`` pada `DNS Slave`
+
+```
+echo 'zone "baratayuda.abimanyu.a09.com" {
         type master;
         file "/etc/bind/baratayuda/baratayuda.abimanyu.a09.com";
-};
+};' >> /etc/bind/named.conf.local
 
 mkdir /etc/bind/baratayuda
 
-cp /etc/bind/db.local /etc/bind/baratayuda.abimanyu.a09.com
+cp /etc/bind/db.local /etc/bind/baratayuda/baratayuda.abimanyu.a09.com
 
-nano baratayuda.abimanyu.a09.com
+echo '
 ;
 ; BIND data file for local loopback interface
 ;
@@ -566,38 +589,56 @@ $TTL    604800
 ;
 @       IN      NS      baratayuda.abimanyu.a09.com.
 @       IN      A       192.173.3.3     ; IP Abimanyu
-www     IN      CNAME   baratayuda.abimanyu.a09.com.
+www     IN      CNAME   baratayuda.abimanyu.a09.com.' > /etc/bind/baratayuda/baratayuda.abimanyu.a09.com
 
-nano /etc/bind/named.conf.options
-tambahkan allow-query{any;}; dan comment dnssec
+echo "options {
+    directory \"/var/cache/bind\";
+
+    // If there is a firewall between you and nameservers you want
+    // to talk to, you may need to fix the firewall to allow multiple
+    // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+    // If your ISP provided one or more IP addresses for stable
+    // nameservers, you probably want to use them as forwarders.
+    // Uncomment the following block, and insert the addresses replacing
+    // the all-0's placeholder.
+
+    // forwarders {
+    //      0.0.0.0;
+    // };
+
+    //========================================================================
+    // If BIND logs error messages about the root key being expired,
+    // you will need to update your keys.  See https://www.isc.org/bind-keys
+    //========================================================================
+    //dnssec-validation auto;
+
+    allow-query { any; };
+    auth-nxdomain no;
+    listen-on-v6 { any; };
+};" > /etc/bind/named.conf.options
 
 service bind9 restart
 ```
 
-**Abimanyu**
-```
-ping baratayuda.abimanyu.a09.com -c 5
-ping www.baratayuda.abimanyu.a09.com -c 5
-```
+### Result
 
-**Result**
-
-![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/72a39d43-aeda-4bf2-9585-6bb72bb5450a)
-
-![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/476c6b98-fd90-4f4f-af0f-d8aa682be401)
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/25400b9c-89d4-423c-803d-1019c386667d)
 
 ### Soal 8
 > Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
 
-### Script
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Karena sebelumnya telah melakukan ``delegasi`` terhadap `DNS Slave` dan sekarang kita diberi perintah untuk melakukan subdomain terhadap ``delegasi domain`` tadi. Kita perlu untuk melakukan penambahan pada `DNS Slave` sebagai berikut.
 
-### Result
-
-**Werkudara** 
 ```
-nano /etc/bind/baratayuda/baratayuda.abimanyu.a09.com
+rjp             IN      A       192.173.3.3     ; IP Abimanyu
+www.rjp         IN      CNAME   rjp.baratayuda.abimanyu.a09.com.
+```
 
-;
+### Script
+**Werkudara**
+```
+echo ';
 ; BIND data file for local loopback interface
 ;
 $TTL    604800
@@ -612,21 +653,14 @@ $TTL    604800
 @               IN      A       192.173.3.3     ; IP Abimanyu
 www             IN      CNAME   baratayuda.abimanyu.a09.com.
 rjp             IN      A       192.173.3.3     ; IP Abimanyu
-www.rjp         IN      CNAME   rjp.baratayuda.abimanyu.a09.com.
+www.rjp         IN      CNAME   rjp.baratayuda.abimanyu.a09.com.' > /etc/bind/baratayuda/baratayuda.abimanyu.a09.com
 
 service bind9 restart
 ```
 
-**Abimanyu**
-```
-ping www.rjp.baratayuda.abimanyu.a09.com -c 5
-ping rjp.baratayuda.abimanyu.a09.com -c 5
-```
+### Result
 
-**Result**
-
-![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/e46fc859-83a9-40a8-a72c-4e3857be5bfd)
-
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/85a7d869-744f-4456-a9ee-6ddccb35d98c)
 
 ### Soal 9
 > Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker
