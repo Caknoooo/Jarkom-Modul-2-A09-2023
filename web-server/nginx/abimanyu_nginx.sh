@@ -9,6 +9,7 @@ apt-get install lynx -y
 
 apt install nginx php php-fpm -y
 
+# 9 dan 10
 mkdir /var/www/jarkom
 
 echo "<?php
@@ -27,7 +28,7 @@ echo \"Tanggal saat ini: \$date<br>\";
 service php7.0-fpm start
 
 echo 'server {
-        listen 80;
+        listen 8002;
 
         root /var/www/jarkom;
         index index.php index.html index.htm index.nginx-debian.html;
