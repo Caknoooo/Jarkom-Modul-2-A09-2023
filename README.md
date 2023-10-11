@@ -398,7 +398,7 @@ ping parikesit.abimanyu.a09.com -c 5
 
 ![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/2bd9c244-2a14-4213-88b5-243228b02b94)
 
-### Soal 5
+## Soal 5
 > Buat juga reverse domain untuk domain utama.
 
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Yang akan kita reverse domainnya adalah Abimanyu. 
@@ -444,7 +444,7 @@ host -t PTR 192.173.3.3
 
 ![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/67c26265-8561-461f-80d3-8c2b9d2f5ac0)
 
-### Soal 6
+## Soal 6
 > Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
 
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk mengerjakan DNS Slave, kita memerlukan beberapa konfigurasi pada `DNS Master` dan `DNS Slave (Werkudara)`
@@ -502,7 +502,7 @@ ping www.abimanyu.a09.com -c 5
 
 ![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/84bd0be0-284b-4692-b767-cc8af6f99672)
 
-### Soal 7
+## Soal 7
 > Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda
 
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk melakukan Delegasi subdomain. Kita memerlukan beberapa configurasi pada `DNS Master` dan `DNS Slave`. Kita juga memerlukan bantuan ``allow-query { any; };`` pada `DNS Master dan Slave. Serta kita memerlukan ``NS`` karena NS digunakan untuk delegasi zona DNS untuk menggunakan authoritative name server yang diberikan
@@ -625,7 +625,7 @@ service bind9 restart
 
 ![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/25400b9c-89d4-423c-803d-1019c386667d)
 
-### Soal 8
+## Soal 8
 > Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
 
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Karena sebelumnya telah melakukan ``delegasi`` terhadap `DNS Slave` dan sekarang kita diberi perintah untuk melakukan subdomain terhadap ``delegasi domain`` tadi. Kita perlu untuk melakukan penambahan pada `DNS Slave` sebagai berikut.
@@ -657,90 +657,114 @@ www.rjp         IN      CNAME   rjp.baratayuda.abimanyu.a09.com.' > /etc/bind/ba
 
 service bind9 restart
 ```
-
 ### Result
 
 ![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/85a7d869-744f-4456-a9ee-6ddccb35d98c)
 
-### Soal 9
+
+## Soal 9
 > Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 10
+## Soal 10
 > Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh (Prabakusuma:8001, Abimanyu:8002, Wisanggeni:8003)
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 11
+## Soal 11
 > Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server www.abimanyu.yyy.com. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 12
+## Soal 12
 > Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abimanyu.yyy.com/home.
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 13
+## Soal 13
 > Selain itu, pada subdomain www.parikesit.abimanyu.yyy.com, DocumentRoot disimpan pada /var/www/parikesit.abimanyu.yyy
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 14
+## Soal 14
 > Pada subdomain tersebut folder /public hanya dapat melakukan directory listing sedangkan pada folder /secret tidak dapat diakses (403 Forbidden)
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 15
+## Soal 15
 > Buatlah kustomisasi halaman error pada folder /error untuk mengganti error kode pada Apache. Error kode yang perlu diganti adalah 404 Not Found dan 403 Forbidden.
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 16
+## Soal 16
 > Buatlah suatu konfigurasi virtual host agar file asset www.parikesit.abimanyu.yyy.com/public/js menjadi www.parikesit.abimanyu.yyy.com/js 
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 17
+## Soal 17
 > Agar aman, buatlah konfigurasi agar www.rjp.baratayuda.abimanyu.yyy.com hanya dapat diakses melalui port 14000 dan 14400.
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 18
+## Soal 18
 > Untuk mengaksesnya buatlah autentikasi username berupa “Wayang” dan password “baratayudayyy” dengan yyy merupakan kode kelompok. Letakkan DocumentRoot pada /var/www/rjp.baratayuda.abimanyu.yyy.
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 19
+## Soal 19
 > Buatlah agar setiap kali mengakses IP dari Abimanyu akan secara otomatis dialihkan ke www.abimanyu.yyy.com (alias)
 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+
 ### Script
 
 ### Result
 
-### Soal 20
+## Soal 20
 > Karena website www.parikesit.abimanyu.yyy.com semakin banyak pengunjung dan banyak gambar gambar random, maka ubahlah request gambar yang memiliki substring “abimanyu” akan diarahkan menuju abimanyu.png.
+
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
 
