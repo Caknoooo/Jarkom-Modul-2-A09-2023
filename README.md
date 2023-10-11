@@ -253,9 +253,13 @@ setiap node, kita inisiasi pada `.bashrc` menggunakan `nano`
 
 ### Test
 
-### Soal 2 
+## Soal 2 
 > Buatlah website utama dengan akses ke arjuna.yyy.com dengan alias www.arjuna.yyy.com dengan yyy merupakan kode kelompok.
 Config
+
+### Script
+
+### Test
 
 **Yudhistira**
 ```
@@ -307,8 +311,12 @@ ping arjuna.a09.com -c 5
 
 ![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/da1a8f5f-6c35-45a7-b10d-b084d5fb23b8)
 
-### Soal 3
+## Soal 3
 > Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
+
+### Script
+
+### Test
 
 **Yudhistira**
 ```
@@ -361,8 +369,12 @@ ping abimanyu.a09.com -c 5
 ![image](https://github.com/Caknoooo/Jarkom-Modul-2-A09-2023/assets/92671053/651c1699-2cdf-490a-88ec-f483cba17d11)
 
 
-### Soal 4
+## Soal 4
 > Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain parikesit.abimanyu.yyy.com yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
+
+### Script
+
+### Test
 
 **Yudhistira**
 ```
