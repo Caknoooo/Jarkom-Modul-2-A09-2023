@@ -54,3 +54,7 @@ ln -s /etc/nginx/sites-available/jarkom /etc/nginx/sites-enabled/jarkom
 rm /etc/nginx/sites-enabled/default
 
 service nginx restart
+
+# Test 
+# lynx http://192.173.3.4:8003
+# curl http://192.173.3.4:8003

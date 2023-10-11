@@ -31,3 +31,9 @@ ln -s /etc/nginx/sites-available/jarkom /etc/nginx/sites-enabled/jarkom
 rm /etc/nginx/sites-enabled/default
 
 service nginx restart
+
+# Test 
+# lynx http://192.173.3.5
+# lynx http://arjuna.a09.com
+# lynx http://www.arjuna.a09.com
+# curl http://www.arjuna.a09.com

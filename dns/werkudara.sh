@@ -11,6 +11,10 @@ echo 'zone "abimanyu.a09.com" {
 
 service bind9 restart
 
+# Test
+# ping abimanyu.a09.com -c 5
+# ping www.abimanyu.a09.com -c 5
+
 # 7 (Delegasi)
 echo 'zone "baratayuda.abimanyu.a09.com" {
         type master;
@@ -66,6 +70,10 @@ echo "options {
 
 service bind9 restart
 
+# Test
+# ping baratayuda.abimanyu.a09.com -c 5
+# ping www.baratayuda.abimanyu.a09.com -c 5
+
 # 8
 echo ';
 ; BIND data file for local loopback interface
@@ -85,3 +93,7 @@ rjp             IN      A       192.173.3.3     ; IP Abimanyu
 www.rjp         IN      CNAME   rjp.baratayuda.abimanyu.a09.com.' > /etc/bind/baratayuda/baratayuda.abimanyu.a09.com
 
 service bind9 restart
+
+# Test
+# ping rjp.baratayuda.abimanyu.a09.com -c 5
+# ping www.rjp.baratayuda.abimanyu.a09.com -c 5
