@@ -246,8 +246,12 @@ setiap node, kita inisiasi pada `.bashrc` menggunakan `nano`
   rm -rf /var/www/rjp.baratayuda.abimanyu.yyy.com
   ```
 
-### Soal 1 
+## Soal 1 
 > Yudhistira akan digunakan sebagai DNS Master, Werkudara sebagai DNS Slave, Arjuna merupakan Load Balancer yang terdiri dari beberapa Web Server yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Buatlah topologi dengan pembagian sebagai berikut. Folder topologi dapat diakses pada drive berikut
+
+### Script
+
+### Test
 
 ### Soal 2 
 > Buatlah website utama dengan akses ke arjuna.yyy.com dengan alias www.arjuna.yyy.com dengan yyy merupakan kode kelompok.
