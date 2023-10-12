@@ -183,7 +183,6 @@ setiap node, kita inisiasi pada `.bashrc` menggunakan `nano`
 
 - **Pandudewanata**
   ```
-  apt-get update
   iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 192.173.0.0/16
   echo 'nameserver 192.168.122.1' > /etc/resolv.conf
   ```
@@ -676,20 +675,164 @@ service bind9 restart
 ## Soal 9
 > Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk mengerjakan load balancing kita memerlukan beberapa configurasi pada `Arjuna`.
+
+Pertama-tama, pastika telah mengkonfigurasi Arjuna dengan benar, termasuk konfigurasi Nginx dan aturan load balancing. Dapat menentukan algoritma load balancing yang sesuai untuk kebutuhan Anda, seperti round-robin atau algoritma lainnya.
+
+Selanjutnya, perlu melakukan deployment pada masing-masing worker. Ini melibatkan mengunggah aplikasi atau layanan web yang ingin di load balance ke setiap worker. Pastikan bahwa semua worker telah diatur dengan benar dan siap melayani lalu lintas web.
+
+Saat semua konfigurasi dan deployment selesai, Arjuna akan bertindak sebagai load balancer yang akan mendistribusikan lalu lintas web ke worker yang tersedia
 
 ### Script
+**Arjuna (Load Balancing)**
+
+Disini kita perlu untuk membuat load balancing nya sebagai berikut 
+```
+echo 'upstream backend {
+  server 192.173.3.2; # IP PrabuKusuma
+  server 192.173.3.3; # IP Abimanyu
+  server 192.173.3.4; # IP Wisanggeni
+}
+
+server {
+  listen 80;
+  server_name arjuna.a09.com www.arjuna.a09.com;
+
+  location / {
+    proxy_pass http://backend;
+  }
+}
+' > /etc/nginx/sites-available/jarkom
+```
+
+jangan lupa untuk melakukan `symlink` dengan menjalankan perintah berikut
+
+```
+ln -s /etc/nginx/sites-available/jarkom /etc/nginx/sites-enabled/jarkom
+```
+
+agar port tidak bertabrakan dengan `default` yang ada saat kita melakukan installasi pada `nginx`, maka kita harus menghapus file `default` tersebut
+
+```
+rm /etc/nginx/sites-enabled/default
+```
+
+lalu restart 
+```
+service nginx restart
+```
+
+**PrabuKusuma, Abimanyu,, Wisanggeni**
+
+Jalankan perintah `shell` berikut pada masing-masing `worker`
+```
+service php7.0-fpm start
+
+echo 'server {
+        listen 80;
+
+        root /var/www/jarkom;
+        index index.php index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+        }
+
+        location ~ /\.ht {
+                deny all;
+        }
+}' > /etc/nginx/sites-available/jarkom
+
+ln -s /etc/nginx/sites-available/jarkom /etc/nginx/sites-enabled/jarkom
+
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+
+**Client (Sadewa / Nakula)**
+```
+Lakukan test berikut 
+
+lynx http://192.173.3.2
+lynx http://192.173.3.3
+lynx http://192.173.3.4
+lynx http://192.173.3.5
+lynx http://arjuna.a09.com
+```
 
 ### Result
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/76526eb9-6894-4c51-b30c-10cd8b371244)
+
+**Load Balancing**
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/ab7ed8ca-f67a-413d-8c77-fc46702e984c)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/0d0f9531-b3ea-41c5-801c-4df9cdf4730f)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/4e94ebbb-7b5a-4d34-a42a-d09268d29938)
 
 ## Soal 10
 > Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh (Prabakusuma:8001, Abimanyu:8002, Wisanggeni:8003)
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Karena telah berhasil melakukan deployment pada [nomor 9](#soal-9). Hanya perlu mengubah masing-masing port pada worker menuju port yang telah ditentukan yaitu `Prabakusuma:8001, Abimanyu:8002, Wisanggeni:8003`. Kita juga perlu mengubah port `load-balancing` dengan menambahkan `:800X` pada masing-masing server
 
 ### Script
 
+**Arjuna (Load Balancing)**
+```
+upstream backend {
+  server 192.173.3.2:8001; # IP PrabuKusuma
+  server 192.173.3.3:8002; # IP Abimanyu
+  server 192.173.3.4:8003; # IP Wisanggeni
+}
+```
+
+**PrabuKusuma, Abimanyu, Wisanggeni**
+
+X adalah port yang telah ditentukan sesuai `worker` masing-masing
+```
+echo 'server {
+        listen 800X;
+
+        root /var/www/jarkom;
+        index index.php index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+        }
+
+        location ~ /\.ht {
+                deny all;
+        }
+}' > /etc/nginx/sites-available/jarkom
+```
 ### Result
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/76526eb9-6894-4c51-b30c-10cd8b371244)
+
+**Load Balancing**
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/ab7ed8ca-f67a-413d-8c77-fc46702e984c)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/0d0f9531-b3ea-41c5-801c-4df9cdf4730f)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/4e94ebbb-7b5a-4d34-a42a-d09268d29938)
 
 ## Soal 11
 > Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server www.abimanyu.yyy.com. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy
