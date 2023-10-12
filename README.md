@@ -837,11 +837,63 @@ echo 'server {
 ## Soal 11
 > Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server www.abimanyu.yyy.com. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. 
 
 ### Script
+**Yudhistira**
+```
+# 11
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     abimanyu.a09.com. root.abimanyu.a09.com. (
+                        2023101001      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      abimanyu.a09.com.
+@       IN      A       192.173.3.3     ; IP Abimanyu
+www     IN      CNAME   abimanyu.a09.com.
+parikesit IN    A       192.173.3.3     ; IP Abimanyu
+ns1     IN      A       192.173.2.2     ; IP Werkudara
+baratayuda IN   NS      ns1' > /etc/bind/jarkom/abimanyu.a09.com
+
+service bind9 restart
+```
+
+**Abimanyu**
+```
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/abimanyu.a09.com.conf
+
+rm /etc/apache2/sites-available/000-default.conf
+
+echo -e '<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/abimanyu.a09
+
+  ServerName abimanyu.a09.com
+  ServerAlias www.abimanyu.a09.com
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/abimanyu.a09.com.conf
+
+a2ensite abimanyu.a09.com.conf
+
+service apache2 restart
+```
+
+**Client (Sadewa)**
+```
+lynx abimanyu.a09.com
+```
 
 ### Result
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/cb0cd154-9d9f-4071-ae06-ec0ae3c8d216)
 
 ## Soal 12
 > Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abimanyu.yyy.com/home.
@@ -849,8 +901,36 @@ Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dah
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
+**Abimanyu**
+```
+echo -e '<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/abimanyu.a09
+  ServerName abimanyu.a09.com
+  ServerAlias www.abimanyu.a09.com
+
+  <Directory /var/www/abimanyu.a09/index.php/home>
+          Options +Indexes
+  </Directory>
+
+  Alias "/home" "/var/www/abimanyu.a09/index.php/home"
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/abimanyu.a09.com.conf
+
+service apache2 restart
+```
+
+**Client (Sadewa)**
+```
+lynx abimanyu.a09.com/home
+curl abimanyu.a09.com/home
+```
 
 ### Result
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/1fca6d10-4193-4438-b93c-8e9a0f1878ed)
 
 ## Soal 13
 > Selain itu, pada subdomain www.parikesit.abimanyu.yyy.com, DocumentRoot disimpan pada /var/www/parikesit.abimanyu.yyy
@@ -858,8 +938,32 @@ Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dah
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
+**Abimanyu**
+```
+echo -e '<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/parikesit.abimanyu.a09
+  ServerName parikesit.abimanyu.a09.com
+  ServerAlias www.parikesit.abimanyu.a09.com
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/parikesit.abimanyu.a09.com.conf
+
+a2ensite parikesit.abimanyu.a09.com.conf
+
+service apache2 restart
+```
+
+**Client (Sadewa)**
+```
+lynx parikesit.abimanyu.a09.com
+curl parikesit.abimanyu.a09.com
+```
 
 ### Result
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/4a0b632a-e282-47f3-995d-72757cae901a)
 
 ## Soal 14
 > Pada subdomain tersebut folder /public hanya dapat melakukan directory listing sedangkan pada folder /secret tidak dapat diakses (403 Forbidden)
@@ -867,8 +971,43 @@ Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dah
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
+**Abimanyu**
+```
+echo -e '<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/parikesit.abimanyu.a09
+  ServerName parikesit.abimanyu.a09.com
+  ServerAlias www.parikesit.abimanyu.a09.com
+
+  <Directory /var/www/parikesit.abimanyu.a09/public>
+          Options +Indexes
+  </Directory>
+
+  <Directory /var/www/parikesit.abimanyu.a09/secret>
+          Options -Indexes
+  </Directory>
+
+  Alias "/public" "/var/www/parikesit.abimanyu.a09/public"
+  Alias "/secret" "/var/www/parikesit.abimanyu.a09/secret"
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/parikesit.abimanyu.a09.com.conf
+
+service apache2 restart
+```
+
+**Client (Sadewa)**
+```
+lynx parikesit.abimanyu.a09.com/public
+lynx parikesit.abimanyu.a09.com/secret
+```
 
 ### Result
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/4687fa2f-3e95-4eaa-8e52-5d0f19c01497)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/85e3f2b6-122a-4a93-a9ef-6feaf13e6184)
 
 ## Soal 15
 > Buatlah kustomisasi halaman error pada folder /error untuk mengganti error kode pada Apache. Error kode yang perlu diganti adalah 404 Not Found dan 403 Forbidden.
@@ -876,8 +1015,51 @@ Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dah
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
+**Abimanyu**
+```
+echo -e '<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/parikesit.abimanyu.a09
+  ServerName parikesit.abimanyu.a09.com
+  ServerAlias www.parikesit.abimanyu.a09.com
+
+  <Directory /var/www/parikesit.abimanyu.a09/public>
+          Options +Indexes
+  </Directory>
+
+  <Directory /var/www/parikesit.abimanyu.a09/secret>
+          Options -Indexes
+  </Directory>
+
+  Alias "/public" "/var/www/parikesit.abimanyu.a09/public"
+  Alias "/secret" "/var/www/parikesit.abimanyu.a09/secret"
+
+  ErrorDocument 404 /error/404.html
+  ErrorDocument 403 /error/403.html
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/parikesit.abimanyu.a09.com.conf
+
+service apache2 restart
+```
+
+**Client (Sadewa)**
+```
+lynx parikesit.abimanyu.a09.com/testerror
+lynx parikesit.abimanyu.a09.com/secret
+```
 
 ### Result
+**Error**
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/41e18fc3-6765-443e-bb68-a5cb09de5464)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/e016b5cf-ba80-4e3b-a0cf-fef133fdb158)
+
+**Forbidden**
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/7d4ae299-3296-4f5c-85de-10a70b502368)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/c56aa0f1-ee2b-435a-a1ce-4e59e588967a)
 
 ## Soal 16
 > Buatlah suatu konfigurasi virtual host agar file asset www.parikesit.abimanyu.yyy.com/public/js menjadi www.parikesit.abimanyu.yyy.com/js 
@@ -885,6 +1067,38 @@ Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dah
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
+**Abimanyu**
+```
+echo -e '<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/parikesit.abimanyu.a09
+  ServerName parikesit.abimanyu.a09.com
+  ServerAlias www.parikesit.abimanyu.a09.com
+
+  <Directory /var/www/parikesit.abimanyu.a09/public>
+          Options +Indexes
+  </Directory>
+
+  <Directory /var/www/parikesit.abimanyu.a09/secret>
+          Options -Indexes
+  </Directory>
+
+  Alias "/public" "/var/www/parikesit.abimanyu.a09/public"
+  Alias "/secret" "/var/www/parikesit.abimanyu.a09/secret"
+  Alias "/js" "/var/www/parikesit.abimanyu.a09/public/js"
+
+  ErrorDocument 404 /error/404.html
+  ErrorDocument 403 /error/403.html
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/parikesit.abimanyu.a09.com.conf
+```
+
+**Client (Sadewa)**
+```
+lynx parikesit.abimanyu.a09.com/js
+```
 
 ### Result
 
@@ -894,8 +1108,56 @@ Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dah
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
+**Abimanyu**
+```
+echo -e '<VirtualHost *:14000 *:14400>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/rjp.baratayuda.abimanyu.a09
+  ServerName rjp.baratayuda.abimanyu.a09.com
+  ServerAlias www.rjp.baratayuda.abimanyu.a09.com
+
+  ErrorDocument 404 /error/404.html
+  ErrorDocument 403 /error/403.html
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/rjp.baratayuda.abimanyu.a09.com.conf
+
+echo -e '# If you just change the port or add more ports here, you will likely also
+# have to change the VirtualHost statement in
+# /etc/apache2/sites-enabled/000-default.conf
+
+Listen 80
+Listen 14000
+Listen 14400
+
+<IfModule ssl_module>
+        Listen 443
+</IfModule>
+
+<IfModule mod_gnutls.c>
+        Listen 443
+</IfModule>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet' > /etc/apache2/ports.conf
+
+a2ensite rjp.baratayuda.abimanyu.a09.com.conf
+
+service apache2 restart
+```
+
+**Client (Sadewa)**
+```
+lynx rjp.baratayuda.abimanyu.a09.com:14000
+lynx rjp.baratayuda.abimanyu.a09.com:14400
+```
 
 ### Result
+**Port 14000 atau 14400**
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/1f6b4789-136a-415c-97a5-ef18936816d0)
+
+**Port yang tidak sesuai**
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/46bc610e-13c7-4b4c-8619-39824ebd418d)
 
 ## Soal 18
 > Untuk mengaksesnya buatlah autentikasi username berupa “Wayang” dan password “baratayudayyy” dengan yyy merupakan kode kelompok. Letakkan DocumentRoot pada /var/www/rjp.baratayuda.abimanyu.yyy.
@@ -903,8 +1165,52 @@ Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dah
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
+**Abimanyu**
+```
+echo -e '<VirtualHost *:14000 *:14400>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/rjp.baratayuda.abimanyu.a09
+  ServerName rjp.baratayuda.abimanyu.a09.com
+  ServerAlias www.rjp.baratayuda.abimanyu.a09.com
+
+  <Directory /var/www/rjp.baratayuda.abimanyu.a09>
+          AuthType Basic
+          AuthName "Restricted Content"
+          AuthUserFile /etc/apache2/.htpasswd
+          Require valid-user
+  </Directory>
+
+  ErrorDocument 404 /error/404.html
+  ErrorDocument 403 /error/403.html
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/rjp.baratayuda.abimanyu.a09.com.conf
+
+a2ensite rjp.baratayuda.abimanyu.a09.com.conf
+
+service apache2 restart
+```
+
+Tambahkan autentikasi
+```
+htpasswd -c -b /etc/apache2/.htpasswd Wayang baratayudaa09
+```
+
+**Client (Sadewa)**
+```
+lynx rjp.baratayuda.abimanyu.a09.com:14000
+lynx rjp.baratayuda.abimanyu.a09.com:14400
+```
 
 ### Result
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/4db4dcfb-1eff-4134-963f-5a64bda82dd0)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/2d139682-7e15-4321-8301-b74b176e456c)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/d25c9b62-d457-45ff-be2c-4dd219696c51)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/c09c9346-4a0b-45ce-8711-eb1f1a2f2145)
 
 ## Soal 19
 > Buatlah agar setiap kali mengakses IP dari Abimanyu akan secara otomatis dialihkan ke www.abimanyu.yyy.com (alias)
@@ -912,8 +1218,34 @@ Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dah
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
+**Abimanyu**
+```
+echo -e '<VirtualHost *:80>
+    ServerAdmin webmaster@abimanyu.a09.com
+    DocumentRoot /var/www/html
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    Redirect / http://www.abimanyu.a09.com/
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+```
+
+Config test
+```
+apache2ctl configtest
+service apache2 restart
+```
+
+**Client (Sadewa)**
+```
+lynx 192.173.3.3
+```
 
 ### Result
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/1784823c-813a-4c6f-af3d-a4589a87725f)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/cf047ea3-b08e-4a04-8b61-c25fd6b6df75)
 
 ## Soal 20
 > Karena website www.parikesit.abimanyu.yyy.com semakin banyak pengunjung dan banyak gambar gambar random, maka ubahlah request gambar yang memiliki substring “abimanyu” akan diarahkan menuju abimanyu.png.
@@ -921,5 +1253,66 @@ Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dah
 Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
 
 ### Script
+**Abimanyu**
+Jangan lupa untuk menjalankan perintah berikut agar dapat melakukan `rewrite modul`
+```
+a2enmod rewrite
+```
 
+Lalu jalankan perintah tersebut untuk melakukan `rewrite` terhdap directory ``parikesit.abimanyu.a09``
+```
+echo 'RewriteEngine On
+RewriteCond %{REQUEST_URI} ^/public/images/(.*)abimanyu(.*)
+RewriteCond %{REQUEST_URI} !/public/images/abimanyu.png
+RewriteRule abimanyu http://parikesit.abimanyu.a09.com/public/images/abimanyu.png$1 [L,R=301]' > /var/www/parikesit.abimanyu.a09/.htaccess
+```
+
+Ubah konfigurasi dan gunakan `AllowOverride All` untuk mengkonfigurasi nya dengan `.htaccess` sebelumnya.
+```
+echo -e '<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/parikesit.abimanyu.a09
+
+  ServerName parikesit.abimanyu.a09.com
+  ServerAlias www.parikesit.abimanyu.a09.com
+
+  <Directory /var/www/parikesit.abimanyu.a09/public>
+          Options +Indexes
+  </Directory>
+
+  <Directory /var/www/parikesit.abimanyu.a09/secret>
+          Options -Indexes
+  </Directory>
+
+  <Directory /var/www/parikesit.abimanyu.a09>
+          Options +FollowSymLinks -Multiviews
+          AllowOverride All
+  </Directory>
+
+  Alias "/public" "/var/www/parikesit.abimanyu.a09/public"
+  Alias "/secret" "/var/www/parikesit.abimanyu.a09/secret"
+  Alias "/js" "/var/www/parikesit.abimanyu.a09/public/js"
+
+  ErrorDocument 404 /error/404.html
+  ErrorDocument 403 /error/403.html
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>' > /etc/apache2/sites-available/parikesit.abimanyu.a09.com.conf
+
+service apache2 restart
+```
+
+**Client (Sadewa)**
+```
+lynx parikesit.abimanyu.a09.com/public/images/not-abimanyu.png
+lynx parikesit.abimanyu.a09.com/public/images/abimanyu-student.jpg
+lynx parikesit.abimanyu.a09.com/public/images/abimanyu.png
+lynx parikesit.abimanyu.a09.com/public/images/notabimanyujustmuseum.177013
+```
 ### Result
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/35b9776e-ee1d-4197-b246-a617a0ec27c2)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/aad3289b-d287-4e02-a31d-6891049b4b13)
+
+![image](https://github.com/Caknoooo/simple-django-restful-api/assets/92671053/2ebf7a72-b68c-453d-b56f-1c22f5b1ddc9)
