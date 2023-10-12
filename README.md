@@ -1276,7 +1276,7 @@ a2enmod rewrite
 Lalu jalankan perintah tersebut untuk melakukan `rewrite` terhdap directory ``parikesit.abimanyu.a09``
 ```
 echo 'RewriteEngine On
-RewriteCond %{REQUEST_URI} ^/public/images/(.*)abimanyu(.*)
+RewriteCond %{REQUEST_URI} ^/public/images/(.*)(abimanyu)(.*\.(png|jpg))
 RewriteCond %{REQUEST_URI} !/public/images/abimanyu.png
 RewriteRule abimanyu http://parikesit.abimanyu.a09.com/public/images/abimanyu.png$1 [L,R=301]' > /var/www/parikesit.abimanyu.a09/.htaccess
 ```
