@@ -203,3 +203,5 @@ echo "options {
     auth-nxdomain no;
     listen-on-v6 { any; };
 };" > /etc/bind/named.conf.options
+
+service bind9 restart
