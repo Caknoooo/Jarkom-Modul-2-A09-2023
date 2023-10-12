@@ -127,7 +127,8 @@ $TTL    604800
                          604800 )       ; Negative Cache TTL
 ;
 3.173.192.in-addr.arpa. IN      NS      abimanyu.a09.com.
-3                       IN      PTR     abimanyu.a09.com.' > /etc/bind/jarkom/3.173.192.in-addr.arpa
+3                       IN      PTR     abimanyu.a09.com.
+5                       IN      PTR     arjuna.a09.com.' > /etc/bind/jarkom/3.173.192.in-addr.arpa
 
 service bind9 restart
 

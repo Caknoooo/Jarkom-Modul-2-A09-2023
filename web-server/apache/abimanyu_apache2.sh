@@ -297,12 +297,11 @@ service apache2 restart
 # Test
 # lynx 192.173.3.3
 
-
 # 20
 # Karena website www.parikesit.abimanyu.yyy.com semakin banyak pengunjung dan banyak gambar gambar random, maka ubahlah request gambar yang memiliki substring “abimanyu” akan diarahkan menuju abimanyu.png.
 
 echo 'RewriteEngine On
-RewriteCond %{REQUEST_URI} ^/public/images/(.*)abimanyu(.*)
+RewriteCond %{REQUEST_URI} ^/public/images/(.*)(abimanyu)(.*\.(png|jpg))
 RewriteCond %{REQUEST_URI} !/public/images/abimanyu.png
 RewriteRule abimanyu http://parikesit.abimanyu.a09.com/public/images/abimanyu.png$1 [L,R=301]' > /var/www/parikesit.abimanyu.a09/.htaccess
 
