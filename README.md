@@ -328,13 +328,19 @@ Pada node DNS Master, kita perlu melakukan setup terlebih dahulu sebagai berikut
 
 **Yudhistira**
 ```
-echo 'zone "abimanyu.a09.com" {
+echo 'zone "arjuna.a09.com" {
+        type master;
+        file "/etc/bind/jarkom/arjuna.a09.com";
+        allow-transfer { 192.173.3.5; }; // IP Arjuna
+};
+
+zone "abimanyu.a09.com" {
         type master;
         file "/etc/bind/jarkom/abimanyu.a09.com";
         allow-transfer { 192.173.3.3; }; // IP Arjuna
 };' > /etc/bind/named.conf.local
 
-cp /etc/bind/db.local /etc/bind/jarkom/arjuna.a09.com
+cp /etc/bind/db.local /etc/bind/jarkom/abimanyu.a09.com
 
 echo '
 ;
@@ -837,7 +843,7 @@ echo 'server {
 ## Soal 11
 > Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server www.abimanyu.yyy.com. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. 
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk mengerjakan soal ini, diperlukan beberapa konfigurasi. Salah satunya adalah `Yudhistira` dimana kita akan mengubah IP yang awalnya ke `Werkudara` menuju `Abimanyu`. Lalu diperlukan juga untuk menggunakan `ServerAlias` agar bisa menggunakan `www` nantinya.
 
 ### Script
 **Yudhistira**
@@ -898,7 +904,14 @@ lynx abimanyu.a09.com
 ## Soal 12
 > Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abimanyu.yyy.com/home.
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Disini kita menggunakana bantuan  `Directory` yang melakukan rewrite Indexes. Agar dapat melakukan `Alias`
+```
+<Directory /var/www/abimanyu.a09/index.php/home>
+  Options +Indexes
+</Directory>
+
+Alias "/home" "/var/www/abimanyu.a09/index.php/home"
+```
 
 ### Script
 **Abimanyu**
@@ -935,7 +948,7 @@ curl abimanyu.a09.com/home
 ## Soal 13
 > Selain itu, pada subdomain www.parikesit.abimanyu.yyy.com, DocumentRoot disimpan pada /var/www/parikesit.abimanyu.yyy
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Disini kita hanya memerlukan setup `ServerName` dan `ServerAlias`.
 
 ### Script
 **Abimanyu**
@@ -968,7 +981,7 @@ curl parikesit.abimanyu.a09.com
 ## Soal 14
 > Pada subdomain tersebut folder /public hanya dapat melakukan directory listing sedangkan pada folder /secret tidak dapat diakses (403 Forbidden)
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Karena kita mau mengizinkan `public` agar dapat melakukan directory `listing` kita menggunakan `Options +Indexes`. Sedangkan agar suatu folder tidak dapat di akses, kita dapat menggunakan `Option -Indexes`.
 
 ### Script
 **Abimanyu**
@@ -1012,7 +1025,7 @@ lynx parikesit.abimanyu.a09.com/secret
 ## Soal 15
 > Buatlah kustomisasi halaman error pada folder /error untuk mengganti error kode pada Apache. Error kode yang perlu diganti adalah 404 Not Found dan 403 Forbidden.
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk page html `error`. Kita mendapatkan dari file resources yang telah diberikan, untuk detailnya ada pada folder ``parikesit.abimanyu.a09.com/public/error/``. Disana terdapat 2 file yaitu `403.html` dan `404.html`. Kita juga menggunakan `ErrorDocument` yang berfungsi melakukan `redirect` terhadap file yang diinginkan ketika mendapatkan masalah ketika mengakses domain yang telah ada sebelumnya.
 
 ### Script
 **Abimanyu**
@@ -1064,7 +1077,7 @@ lynx parikesit.abimanyu.a09.com/secret
 ## Soal 16
 > Buatlah suatu konfigurasi virtual host agar file asset www.parikesit.abimanyu.yyy.com/public/js menjadi www.parikesit.abimanyu.yyy.com/js 
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Disini kita hanya perlu menggunakan ``Alias "/js" "/var/www/parikesit.abimanyu.a09/public/js"`` untuk mengubah  virtual host agar file tersebut menjadi lebih singkat. Disini kami juga menggunakan `ServerName` dan `ServerAlias` agar virtual host dapat berjalan.
 
 ### Script
 **Abimanyu**
@@ -1105,7 +1118,7 @@ lynx parikesit.abimanyu.a09.com/js
 ## Soal 17
 > Agar aman, buatlah konfigurasi agar www.rjp.baratayuda.abimanyu.yyy.com hanya dapat diakses melalui port 14000 dan 14400.
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk  melakukan kustomisasi pada port tertentu. Kita hanya perlu mengubah file `ports.conf` dengan menambahkan `Listen 14000` dan `Listen 14400`. Kita juga perlu mengubah `<VirtualHost *:14000 *:14400>`
 
 ### Script
 **Abimanyu**
@@ -1162,7 +1175,7 @@ lynx rjp.baratayuda.abimanyu.a09.com:14400
 ## Soal 18
 > Untuk mengaksesnya buatlah autentikasi username berupa “Wayang” dan password “baratayudayyy” dengan yyy merupakan kode kelompok. Letakkan DocumentRoot pada /var/www/rjp.baratayuda.abimanyu.yyy.
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Untuk melakukan autentikasi pada sebuah server, diperlukan `AuthType` dan `Require Valid-User`. Lalu untuk AuthUserFile sendiri adalah tempat yang ingin kita gunakan untuk melakukan `write`. Sedangkan untuk `AuthName` adalah content-type Autentikasi pada apache2
 
 ### Script
 **Abimanyu**
@@ -1192,7 +1205,7 @@ a2ensite rjp.baratayuda.abimanyu.a09.com.conf
 service apache2 restart
 ```
 
-Tambahkan autentikasi
+Tambahkan autentikasi dengan menggunakan command `htpasswd`. Lalu untuk `-c` itu adalah `created` dan `-b` yang merupakan `bcrypt` agar password yang kita isi akan dilakukan hash terlebih dahulu sebelum disimpan.
 ```
 htpasswd -c -b /etc/apache2/.htpasswd Wayang baratayudaa09
 ```
@@ -1215,7 +1228,7 @@ lynx rjp.baratayuda.abimanyu.a09.com:14400
 ## Soal 19
 > Buatlah agar setiap kali mengakses IP dari Abimanyu akan secara otomatis dialihkan ke www.abimanyu.yyy.com (alias)
 
-Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu.
+Sebelum mengerjakan perlu untuk melakukan [setup](#sebelum-memulai) terlebih dahulu. Agar ketika kita mengakses IP dari abimanyu dapat otomatis dialihkan ke www.abimanyu.a09.com. Kita perlu menggunakan file `Redirect` yang akan mengarahkan kepada file yang kita inginkan. Disini saya memasukkan ke dalam file konfigurasi `000-default.conf` karena merupakan default dari suatu service apache.
 
 ### Script
 **Abimanyu**
